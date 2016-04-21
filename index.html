@@ -6,14 +6,8 @@
         <script>
             $(function(){
                 // insert cursor
-                $(".element").after($("<span class=\"type-out-cursor\">_</span>"));
-
-                // bind keypress to webpage
-                $(document).keypress(function(e) {
-                    let key = String.fromCharCode(e.which);
-                    $(".element").typeIn(key);
-                });
-
+                $(".element").after($("<span class=\"typing-cursor\">_</span>"));
+                
                 $(".element").typeOut();
             });
         </script>

@@ -2,8 +2,7 @@ body {
 	font-size: 20px;
 	font-family: Courier, "Lucida Console", monospace;
 }
-}
-.type-out-cursor {
+.typing-cursor {
     opacity: 1;
     -webkit-animation: blink 1s step-end infinite;
     -moz-animation: blink 1s step-end infinite;

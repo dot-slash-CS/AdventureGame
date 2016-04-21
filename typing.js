@@ -24,18 +24,10 @@
 
     "use strict";
 
-    function init($this) {
+    function setLineMaxChars($this) {
         // max number of chars per line
         if (!$this.data('lineMaxChars')) {
             $this.data('lineMaxChars', 100); // programmer-defined
-        }
-        // current char position
-        if (!$this.data('curTxtPos')) {
-            $this.data('curTxtPos', 0);
-        }
-        // current char position in new string
-        if (!$this.data('curStrPos')) {
-            $this.data('curStrPos', 0);
         }
     }
 
@@ -43,7 +35,11 @@
         return this.each(function() { // applies to each matched element
             $(document).unbind("keypress");
             var $this = $(this);
-            init($this);
+            setLineMaxChars($this);
+            // current char position in new string
+            if (!$this.data('curStrPos')) {
+                $this.data('curStrPos', 0);
+            }
             var humanize = Math.round(Math.random() * (50));
             // contain typing function in a timeout with humanize'd delay
             timeout = setTimeout(function() {
@@ -55,18 +51,18 @@
 
                 // add characters one by one by recursing the function
                 if ($this.data().curStrPos < string.length) {
-                    $this.data().curTxtPos++;
                     $this.data().curStrPos++;
 
                     // linebreaks at the end of lines
-                    //alert(nextChar + " " + $this.data().curTxtPos);
-                    if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
+                    //alert(nextChar + " " + $this.data().curStrPos);
+                    if ($this.data().curStrPos % $this.data().lineMaxChars === 0 && $this.data().curStrPos != 0) {
                         $this.html($this.html() + "<br>");
                     }
 
                     $this.typeOut(string);
                 } else {
                     $this.removeData('curStrPos');
+                    $this.html($this.html() + "<br><br>");
                     $(document).keypress(function(e) {
                         let key = String.fromCharCode(e.which);
                         $(".element").typeIn(key);
@@ -79,9 +75,14 @@
     $.fn.typeIn = function(nextChar = '?') {
         return this.each(function() { // applies to each matched element
             var $this = $(this);
-            init($this);
+            setLineMaxChars($this);
+            // current char position
+            if (!$this.data('curTxtPos')) {
+                $this.data('curTxtPos', 0);
+            }
 
             $this.html($this.html() + nextChar);
+            $this.data('userInput', "" + nextChar);
             $this.data().curTxtPos++;
             // linebreaks at the end of lines
             if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
