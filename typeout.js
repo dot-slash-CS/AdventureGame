@@ -24,58 +24,70 @@
 
     "use strict";
 
-    $.fn.typeOut = function(string = "This is a test of the typeOut() function.") {
-        return this.each(function() { // applies to each matched element
-            var $this = $(this);
-            // max number of chars per line
-            if (!$this.data('lineMaxChars')) {
-                $this.data('lineMaxChars', 20); // programmer-defined
-            }
-            // current char position
-            if (!$this.data('curStrPos')) {
-                $this.data('curStrPos', 0);
-            }
-            // end of new string
-            if (!$this.data('maxPos')) {
-                $this.data('maxPos', string.length - 1);
-            }
+    function init($this) {
+        // max number of chars per line
+        if (!$this.data('lineMaxChars')) {
+            $this.data('lineMaxChars', 20); // programmer-defined
+        }
+        // current char position
+        if (!$this.data('curTxtPos')) {
+            $this.data('curTxtPos', 0);
+        }
+        // current char position in new string
+        if (!$this.data('curStrPos')) {
+            $this.data('curStrPos', 0);
+        }
+    }
 
+    $.fn.typeOut = function(string = "This is a test of typeOut().") {
+        return this.each(function() { // applies to each matched element
+            $(document).unbind("keypress");
+            var $this = $(this);
+            init($this);
             var humanize = Math.round(Math.random() * (50));
             // contain typing function in a timeout with humanize'd delay
             timeout = setTimeout(function() {
-                var charPause = 0;
-                // timeout for any pause after a character
-                timeout = setTimeout(function() {
-                    // start typing each new char into existing string
-                    // newString: arg, $this.html: original text inside element
-                    var nextChar = string.charAt($this.data().curStrPos);
-                    $this.html($this.html() + nextChar);
+                // display curStrPos for debugging
+                //alert($this.data().curStrPos);
 
-                    // display curStrPos for debugging
-                    //alert(curStrPos);
+                var nextChar = (string).charAt($this.data().curStrPos);
+                $this.html($this.html() + nextChar);
+
+                // add characters one by one by recursing the function
+                if ($this.data().curStrPos < string.length) {
+                    $this.data().curTxtPos++;
+                    $this.data().curStrPos++;
 
                     // linebreaks at the end of lines
-                    if ($this.data().curStrPos % self.lineMax === 0 && $this.data().curStrPos != 0) {
+                    //alert(nextChar + " " + $this.data().curTxtPos);
+                    if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
                         $this.html($this.html() + "<br>");
                     }
 
-                    // add characters one by one by recursing the function
-                    if ($this.data().curStrPos !== $this.data().maxPos) {
-                        $this.data().curStrPos++;
-                        $this.typeOut(string);
-                    }
-                    // end of character pause
-                }, charPause);
+                    $this.typeOut(string);
+                } else {
+                    $this.removeData('curStrPos');
+                    /*$(document).keypress(function(e) {
+                        let key = String.fromCharCode(e.which);
+                        $(".element").typeIn(key);
+                    });*/
+                }
             }, humanize);
-
-            /*var $this = $(this), data = $this.data('typeOut');
-            if (!data) {
-                $this.data('typeOut', (data = new TypeOut(this, string)));
-            } else {
-                data.maxPos = this.html().length + string.length - 1;
-                data.typewrite(string, data.strPos);
-            }*/
         });
     };
+
+    /*$.fn.typeIn = function(nextChar = '?') {
+        return this.each(function() { // applies to each matched element
+            var $this = $(this);
+            init($this);
+
+            $this.html($this.html() + nextChar);
+            $this.data().curTxtPos++;
+            // linebreaks at the end of lines
+            if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
+                $this.html($this.html() + "<br>");
+            }
+        });
+    }*/
 
 }(window.jQuery);

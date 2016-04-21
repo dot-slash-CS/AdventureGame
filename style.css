@@ -1,5 +1,7 @@
 body {
 	font-size: 20px;
+	font-family: Courier, "Lucida Console", monospace;
+}
 }
 .type-out-cursor {
     opacity: 1;
