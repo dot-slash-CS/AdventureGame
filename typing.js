@@ -33,14 +33,17 @@
 
     $.fn.typeOut = function(string = "This is a test of typeOut().") {
         return this.each(function() { // applies to each matched element
+            // disable user input while output is printed
+            $(document).unbind("keydown");
             $(document).unbind("keypress");
+
             var $this = $(this);
             setLineMaxChars($this);
             // current char position in new string
             if (!$this.data('curStrPos')) {
                 $this.data('curStrPos', 0);
             }
-            var humanize = Math.round(Math.random() * (50));
+            var humanize = Math.round(Math.random() * (40));
             // contain typing function in a timeout with humanize'd delay
             timeout = setTimeout(function() {
                 // display curStrPos for debugging
@@ -55,7 +58,7 @@
 
                     // linebreaks at the end of lines
                     //alert(nextChar + " " + $this.data().curStrPos);
-                    if ($this.data().curStrPos % $this.data().lineMaxChars === 0 && $this.data().curStrPos != 0) {
+                    if ($this.data().curStrPos % $this.data().lineMaxChars === 0 && $this.data().curStrPos !== 0) {
                         $this.html($this.html() + "<br>");
                     }
 
@@ -63,31 +66,56 @@
                 } else {
                     $this.removeData('curStrPos');
                     $this.html($this.html() + "<br><br>");
-                    $(document).keypress(function(e) {
-                        let key = String.fromCharCode(e.which);
-                        $(".element").typeIn(key);
-                    });
+                    $this.enableInput();
                 }
             }, humanize);
         });
     };
 
-    $.fn.typeIn = function(nextChar = '?') {
+    $.fn.typeIn = function(keyCode) {
         return this.each(function() { // applies to each matched element
+            var nextChar = String.fromCharCode(keyCode);
             var $this = $(this);
             setLineMaxChars($this);
             // current char position
             if (!$this.data('curTxtPos')) {
                 $this.data('curTxtPos', 0);
             }
-
-            $this.html($this.html() + nextChar);
-            $this.data('userInput', "" + nextChar);
-            $this.data().curTxtPos++;
-            // linebreaks at the end of lines
-            if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
-                $this.html($this.html() + "<br>");
+            if (!$this.data('userInput')) {
+                $this.data('userInput', "");
             }
+
+            if (keyCode === 8) { // backspace key
+                if ($this.data().curTxtPos !== 0) {
+                    if ($this.html().slice(-4) === "<br>") {
+                        $this.html($this.html().slice(0, -4));
+                    }
+                    $this.html($this.html().slice(0, -1));
+                    $this.data('userInput', $this.data().userInput.slice(0, -1));
+                    $this.data().curTxtPos--;
+                }
+            } else if (keyCode === 13) { // enter key
+
+            } else {
+                $this.html($this.html() + nextChar);
+                $this.data('userInput', $this.data.userInput + nextChar);
+                $this.data().curTxtPos++;
+                // linebreaks at the end of lines
+                if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
+                    $this.html($this.html() + "<br>");
+                }
+            }
+        });
+    }
+
+    $.fn.enableInput = function() {
+        $(document).keydown(function(e) {
+            if (e.which === 8) { // backspace key
+                $(".element").typeIn(e.which);
+            }
+        });
+        $(document).keypress(function(e) {
+            $(".element").typeIn(e.which);
         });
     }
 

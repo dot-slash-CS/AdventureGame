@@ -7,8 +7,10 @@
             $(function(){
                 // insert cursor
                 $(".element").after($("<span class=\"typing-cursor\">_</span>"));
-                
-                $(".element").typeOut();
+
+                $(".element").enableInput();
+
+                $(".element").typeOut("You arrive at the Ohlone Newark campus.");
             });
         </script>
         <link rel="stylesheet" type="text/css" href="style.css">
