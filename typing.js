@@ -47,18 +47,18 @@
             // contain typing function in a timeout with humanize'd delay
             timeout = setTimeout(function() {
                 // display curStrPos for debugging
-                //alert($this.data().curStrPos);
+                //alert($this.data('curStrPos'));
 
-                var nextChar = (string).charAt($this.data().curStrPos);
+                var nextChar = (string).charAt($this.data('curStrPos'));
                 $this.html($this.html() + nextChar);
 
                 // add characters one by one by recursing the function
-                if ($this.data().curStrPos < string.length) {
-                    $this.data().curStrPos++;
+                if ($this.data('curStrPos') < string.length) {
+                    $this.data('curStrPos', $this.data('curStrPos') + 1);
 
                     // linebreaks at the end of lines
-                    //alert(nextChar + " " + $this.data().curStrPos);
-                    if ($this.data().curStrPos % $this.data().lineMaxChars === 0 && $this.data().curStrPos !== 0) {
+                    //alert(nextChar + " " + $this.data('curStrPos'));
+                    if ($this.data('curStrPos') % $this.data('lineMaxChars') === 0 && $this.data('curStrPos') !== 0) {
                         $this.html($this.html() + "<br>");
                     }
 
@@ -79,37 +79,37 @@
             setLineMaxChars($this);
             // current char position
             if (!$this.data('curTxtPos')) {
-                $this.data('curTxtPos', 0);
+                $this.data('curTxtPos', 1);
             }
             if (!$this.data('userInput')) {
                 $this.data('userInput', "");
             }
 
             if (keyCode === 8) { // backspace key
-                if ($this.data().curTxtPos !== 0) {
+                if ($this.data('curTxtPos') !== 0) {
                     if ($this.html().slice(-4) === "<br>") { // automatically delete linebreaks
                         $this.html($this.html().slice(0, -4));
                     }
                     if ($this.html().slice(-5) === "&amp;") { // "&"
                         $this.html($this.html().slice(0, -5));
-                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                        $this.data('userInput', $this.data('userInput').slice(0, -1));
                     } else if ($this.html().slice(-4) === "&lt;" || $this.html().slice(-4) === "&gt;") { // "<" and ">"
                         $this.html($this.html().slice(0, -4));
-                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                        $this.data('userInput', $this.data('userInput').slice(0, -1));
                     } else {
                         $this.html($this.html().slice(0, -1));
-                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                        $this.data('userInput', $this.data('userInput').slice(0, -1));
                     }
-                    $this.data().curTxtPos--;
+                    $this.data('curTxtPos')--;
                 }
             } else if (keyCode === 13) { // enter key
 
             } else {
                 $this.html($this.html() + nextChar);
-                $this.data('userInput', $this.data.userInput + nextChar);
-                $this.data().curTxtPos++;
+                $this.data('userInput', $this.data('userInput') + nextChar);
+                $this.data('curTxtPos', $this.data('curTxtPos') + 1);
                 // linebreaks at the end of lines
-                if ($this.data().curTxtPos % $this.data().lineMaxChars === 0 && $this.data().curTxtPos != 0) {
+                if ($this.data('curTxtPos') % $this.data('lineMaxChars') === 0 && $this.data('curTxtPos') != 0) {
                     $this.html($this.html() + "<br>");
                 }
             }
@@ -121,6 +121,7 @@
         $(document).keydown(function(e) {
             if (e.which === 27) { // esc key, for debugging
                 alert($this.html());
+                alert($this.data('userInput'));
             }
             if (e.which === 8) { // backspace key
                 $this.typeIn(e.which);
