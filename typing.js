@@ -125,6 +125,7 @@
                 alert($this.data('userInput'));
             }
             if (e.which === 8) { // backspace key, not recognized by keypress()
+                e.preventDefault();
                 $this.typeIn(e.which);
             }
         });
