@@ -65,7 +65,7 @@
                     $this.typeOut(string);
                 } else {
                     $this.removeData('curStrPos');
-                    $this.html($this.html() + "<br><br>");
+                    $this.html($this.html() + "<br><br>&gt;");
                     $this.enableInput();
                 }
             }, humanize);
@@ -87,11 +87,19 @@
 
             if (keyCode === 8) { // backspace key
                 if ($this.data().curTxtPos !== 0) {
-                    if ($this.html().slice(-4) === "<br>") {
+                    if ($this.html().slice(-4) === "<br>") { // automatically delete linebreaks
                         $this.html($this.html().slice(0, -4));
                     }
-                    $this.html($this.html().slice(0, -1));
-                    $this.data('userInput', $this.data().userInput.slice(0, -1));
+                    if ($this.html().slice(-5) === "&amp;") { // "&"
+                        $this.html($this.html().slice(0, -5));
+                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                    } else if ($this.html().slice(-4) === "&lt;" || $this.html().slice(-4) === "&gt;") { // "<" and ">"
+                        $this.html($this.html().slice(0, -4));
+                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                    } else {
+                        $this.html($this.html().slice(0, -1));
+                        $this.data('userInput', $this.data().userInput.slice(0, -1));
+                    }
                     $this.data().curTxtPos--;
                 }
             } else if (keyCode === 13) { // enter key
@@ -109,13 +117,17 @@
     }
 
     $.fn.enableInput = function() {
+        var $this = $(this);
         $(document).keydown(function(e) {
+            if (e.which === 27) { // esc key, for debugging
+                alert($this.html());
+            }
             if (e.which === 8) { // backspace key
-                $(".element").typeIn(e.which);
+                $this.typeIn(e.which);
             }
         });
         $(document).keypress(function(e) {
-            $(".element").typeIn(e.which);
+            $this.typeIn(e.which);
         });
     }
 
