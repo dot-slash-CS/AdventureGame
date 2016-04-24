@@ -45,7 +45,7 @@
             }
             var humanize = Math.round(Math.random() * (40));
             // contain typing function in a timeout with humanize'd delay
-            timeout = setTimeout(function() {
+            var timeout = setTimeout(function() {
                 // display curStrPos for debugging
                 //alert($this.data('curStrPos'));
 
@@ -125,7 +125,7 @@
                 alert($this.data('userInput'));
             }
             if (e.which === 8) { // backspace key, not recognized by keypress()
-                e.preventDefault();
+                e.preventDefault(); // prevent backspace from navigating back in browser
                 $this.typeIn(e.which);
             }
         });
