@@ -24,6 +24,10 @@
 
     "use strict";
 
+    function processInput(command) {
+
+    }
+
     function setLineMaxChars($this) {
         // max number of chars per line
         if (!$this.data('lineMaxChars')) {
@@ -101,6 +105,9 @@
                     $this.data('curTxtPos', $this.data('curTxtPos') - 1);
                 }
             } else if (keyCode === 13) { // enter key
+                processInput($this.data('userInput'));
+                $this.removeData('userInput');
+                $this.html($this.html() + "<br><br>");
 
             } else {
                 $this.html($this.html() + nextChar);
